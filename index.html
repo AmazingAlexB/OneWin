@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#ffffff">
+  <meta charset="UTF-8" />
+  <title>One Win</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+
+  <script>
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('service-worker.js');
+  }
+</script>
+
+  <!-- TOP BAR -->
+  <header class="top-bar">
+    <button id="helpBtn" class="icon-btn">?</button>
+    <h1 class="app-title">One Win</h1>
+    <button id="settingsBtn" class="icon-btn">⚙️</button>
+  </header>
+
+  <main>
+    <!-- ONE WIN SCREEN -->
+    <section id="oneWinScreen" class="screen active">
+      <button id="brainBtn" class="brain-fab">🧠</button>
+
+      <div id="oneWinTask" class="onewin-task-container">
+        <!-- Filled by JS -->
+      </div>
+
+      <button id="addTaskBtn" class="fab-btn">＋</button>
+    </section>
+
+    <!-- BRAIN DUMP SCREEN -->
+    <section id="brainDumpScreen" class="screen">
+      <header class="sub-header brain-header">
+        <h2>Brain Dump</h2>
+      </header>
+
+      <div class="brain-controls">
+        <label class="toggle-row">
+          <input type="checkbox" id="showTasksToggle" />
+          <span>Show tasks</span>
+        </label>
+      </div>
+
+      <div id="rolodexContainer" class="rolodex-container hidden">
+        <div id="rolodexCard" class="rolodex-card">
+          <!-- Filled by JS -->
+        </div>
+        <div class="rolodex-nav">
+          <button id="prevTaskBtn" class="nav-small">◀</button>
+          <span id="rolodexIndex"></span>
+          <button id="nextTaskBtn" class="nav-small">▶</button>
+        </div>
+        <button id="deleteTaskBtn" class="danger-btn">Delete this task</button>
+      </div>
+
+      <button id="backToOneWinFromBrain" class="gold-btn bottom-star">⭐ Back to One Win</button>
+    </section>
+
+    <!-- SETTINGS SCREEN -->
+    <section id="settingsScreen" class="screen">
+      <header class="sub-header">
+        <h2>Settings</h2>
+      </header>
+
+      <div class="settings-section">
+        <h3>Reminder Interval</h3>
+        <div class="settings-row">
+          <button class="reminder-btn" data-mins="1">Every 1 min</button>
+          <button class="reminder-btn" data-mins="5">Every 5 mins</button>
+          <button class="reminder-btn" data-mins="10">Every 10 mins</button>
+          <button class="reminder-btn" data-mins="30">Every 30 mins</button>
+          <button class="reminder-btn" data-mins="60">Every 1 hour</button>
+          <button class="reminder-btn" data-mins="120">Every 2 hours</button>
+          <button class="reminder-btn" data-mins="180">Every 3 hours</button>
+          <button class="reminder-btn" data-mins="off">Off</button>
+        </div>
+        <p id="currentReminderLabel" class="meta-text">Current: Off</p>
+      </div>
+
+      <div class="settings-section">
+        <h3>Priority</h3>
+        <div class="settings-row">
+          <button class="priority-btn" data-mode="deadline">By deadline</button>
+          <button class="priority-btn" data-mode="urgency">By urgency</button>
+        </div>
+        <p id="currentPriorityLabel" class="meta-text">Current: By deadline</p>
+      </div>
+
+      <div class="settings-section">
+        <h3>User</h3>
+        <p id="userIdText" class="meta-text"></p>
+      </div>
+
+      <button id="settingsBackBtn" class="back-btn">Back to One Win</button>
+    </section>
+
+    <!-- HELP SCREEN -->
+    <section id="helpScreen" class="screen">
+      <header class="sub-header">
+        <h2>How One Win Works</h2>
+      </header>
+      <div class="help-body">
+
+  <p><strong>✨ One Win</strong> helps you focus on the single most important task you can complete today.</p>
+
+  <h3 style="margin-top:16px;">📝 How it works</h3>
+  <p>• Add tasks using the blue + button.</p>
+  <p>• Each task has a deadline date, time, and urgency level.</p>
+  <p>• All tasks are stored in your Brain Dump.</p>
+
+  <h3 style="margin-top:16px;">⭐ Your One Win</h3>
+  <p>The app automatically selects one task for you to focus on:</p>
+  <p>• By <strong>deadline</strong> (soonest first), or</p>
+  <p>• By <strong>urgency</strong> (Very Urgent → Urgent → Not So Urgent).</p>
+  <p>You can change this in Settings.</p>
+
+  <h3 style="margin-top:16px;">✔️ Completing tasks</h3>
+  <p>When you tick a task as Complete on the One Win screen, it is removed from your Brain Dump and the next task appears automatically.</p>
+
+  <h3 style="margin-top:16px;">🧠 Brain Dump</h3>
+  <p>Tap the pink brain to view all your tasks. You can hide or show them, scroll through them one at a time, and delete any task you no longer need.</p>
+
+  <h3 style="margin-top:16px;">🔔 Reminders</h3>
+  <p>You can set a reminder interval in Settings. The app will gently remind you about your current One Win at the interval you choose.</p>
+
+  <h3 style="margin-top:16px;">👤 Your data</h3>
+  <p>Your tasks stay on your device and are linked to your unique User ID.</p>
+
+</div>
+      <button id="helpBackBtn" class="back-btn">Back to One Win</button>
+    </section>
+  </main>
+
+  <!-- ADD TASK MODAL -->
+  <div id="addTaskOverlay" class="overlay hidden">
+    <div class="overlay-content">
+      <h2>Add Task</h2>
+
+      <label class="field-label">Task</label>
+      <input id="taskInput" type="text" class="input-field" placeholder="What do you want to do?" />
+
+      <label class="field-label">Deadline date</label>
+      <input id="dateInput" type="date" class="input-field" />
+
+      <label class="field-label">Deadline time</label>
+      <input id="timeInput" type="time" class="input-field" />
+
+      <label class="field-label">Urgency</label>
+      <div class="urgency-row">
+        <button class="urgency-btn" data-urgency="VERY URGENT">🔴 Very urgent</button>
+        <button class="urgency-btn" data-urgency="URGENT">🟥 Urgent</button>
+        <button class="urgency-btn" data-urgency="NOT SO URGENT">🩷 Not so urgent</button>
+      </div>
+
+      <div class="overlay-actions">
+        <button id="cancelAddBtn" class="cancel-btn">Cancel</button>
+        <button id="saveTaskBtn" class="save-btn" disabled>Save</button>
+      </div>
+    </div>
+  </div>
+
+<!-- TIME PICKER -->
+<div id="timePickerOverlay" class="overlay hidden">
+  <div class="overlay-content time-picker">
+    <h2>Select Time</h2>
+
+    <div class="time-columns">
+      <div class="time-column" id="hourColumn"></div>
+      <div class="time-column" id="minuteColumn"></div>
+    </div>
+
+    <div class="overlay-actions">
+      <button id="cancelTimeBtn" class="cancel-btn">Cancel</button>
+      <button id="doneTimeBtn" class="save-btn">Done</button>
+    </div>
+  </div>
+</div>
+
+  <!-- REMINDER BANNER -->
+  <div id="reminderBanner" class="reminder-banner hidden">
+    <p id="reminderText"></p>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
