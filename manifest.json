@@ -1,7 +1,7 @@
 {
   "name": "One Win",
   "short_name": "OneWin",
-  "start_url": "index.html",
+  "start_url": "https://amazingalexb.github.io/OneWin/",
   "display": "standalone",
   "background_color": "#ffffff",
   "theme_color": "#ffffff",
@@ -18,3 +18,4 @@
     }
   ]
 }
+
